@@ -522,10 +522,12 @@ ARCHITECTURE BEHAVIORAL OF TOP_LEVEL IS
         IF RST = '1' THEN
             SPEED <= 30;
         ELSE
+	-- CHOOSING BETWEEN MAX (60 FPS) AND MIN (2 FPS) SPEED
+	-- IF YOU WANT GRADUAL SPEED CHANGE, YOU WILL NEED TO DEBOUNCE THE SPEED PUSH-BUTTON
             IF SPEED_DOWN = '1' AND SPEED < 30 THEN
-                SPEED <= SPEED + 10;            
+                SPEED <= SPEED + 30; -- 30           
             ELSIF SPEED_UP = '1' AND SPEED > 0 THEN
-                SPEED <= SPEED - 10; 
+                SPEED <= SPEED - 30; -- 0
             ELSE
                 SPEED <= SPEED;       
             END IF;
