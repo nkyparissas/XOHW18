@@ -124,9 +124,15 @@ BEGIN
 	
 	PROCESS(FIFO_DATA)
 	BEGIN
-    for i in 0 to 31 loop
-        APP_WDF_DATA( ((31-i+1)*4)-1 DOWNTO (31 - i)*4 ) <= FIFO_DATA ( ((i+1)*4)-1 DOWNTO i*4 ) ;
-    end loop ;
+		IF CELL_SIZE = 4 THEN
+		    for i in 0 to 31 loop
+			APP_WDF_DATA( ((31-i+1)*4)-1 DOWNTO (31 - i)*4 ) <= FIFO_DATA ( ((i+1)*4)-1 DOWNTO i*4 );
+		    end loop ; 
+		ELSE
+		    for i in 0 to 15 loop
+			APP_WDF_DATA( ((15-i+1)*8)-1 DOWNTO (15 - i)*8 ) <= FIFO_DATA ( ((i+1)*8)-1 DOWNTO i*8 ) ;
+		    end loop;
+		END IF;
 	END PROCESS;
 	
 	FIFO_READ_EN <= APP_WDF_RDY WHEN FIFO_READY = '1' AND MEM_ACCESS_GRANTED = '1' ELSE '0';
