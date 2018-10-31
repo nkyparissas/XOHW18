@@ -90,15 +90,19 @@ BEGIN
 					FIFO_READ_EN <= '0';
 					FSM_STATE <= WRITING;
 				WHEN WRITING =>
-					for i in 0 to 31 loop
-					    -- NOT TO BE CONFUSED WITH 
-					    -- APP_WDF_DATA( ((31-i+1)*CELL_SIZE)-1 DOWNTO (31 - i)*CELL_SIZE )
-                        APP_WDF_DATA( ((31-i+1)*4)-1 DOWNTO (31 - i)*4 ) <= FIFO_DATA ( ((i+1)*4)-1 DOWNTO i*4 ) ;
-                    end loop ;                                    
+					IF CELL_SIZE = 4 THEN
+                        			for i in 0 to 31 loop
+                            				APP_WDF_DATA( ((31-i+1)*4)-1 DOWNTO (31 - i)*4 ) <= FIFO_DATA ( ((i+1)*4)-1 DOWNTO i*4 );
+                        			end loop ; 
+                    			ELSE
+                        			for i in 0 to 15 loop
+                            				APP_WDF_DATA( ((15-i+1)*8)-1 DOWNTO (15 - i)*8 ) <= FIFO_DATA ( ((i+1)*8)-1 DOWNTO i*8 ) ;
+                        			end loop;
+                    			END IF;                                    
 					IF (APP_WDF_RDY = '1') THEN	
-                        APP_WDF_WREN <= '1';
-                        APP_WDF_END <= '1';
-                        FSM_STATE <= WRITING_2;
+						APP_WDF_WREN <= '1';
+						APP_WDF_END <= '1';
+						FSM_STATE <= WRITING_2;
 					ELSE
 						FSM_STATE <= WRITING;
 					END IF;
